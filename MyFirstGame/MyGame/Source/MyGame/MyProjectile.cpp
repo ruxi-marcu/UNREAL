@@ -94,6 +94,7 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 			
 				//you won play animation
 				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("TARGET HIT"));
+				bHit = true;
 		}
 		
 	}

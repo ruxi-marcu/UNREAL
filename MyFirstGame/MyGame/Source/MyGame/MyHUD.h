@@ -21,7 +21,10 @@ public:
 public:
 	// This will be drawn at the center of the screen.
 	UPROPERTY(EditDefaultsOnly)
-		UTexture2D* CrosshairTexture;
+	UTexture2D* CrosshairTexture;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* PlayerScore;
 	
 	
 };
