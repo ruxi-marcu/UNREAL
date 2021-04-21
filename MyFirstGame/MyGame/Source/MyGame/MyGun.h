@@ -9,6 +9,8 @@
 
 //#define TRACE_WEAPON ECC_GameTraceChannel1
 
+class AMyGameCharacter;
+
 USTRUCT()
 struct FGunData {
 	GENERATED_USTRUCT_BODY()
@@ -45,10 +47,10 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	UFUNCTION()
-	void FireFirst(UCameraComponent* aimCamera);
+	void FireFirst(AMyGameCharacter* MyCharacter, UCameraComponent* aimCamera);
 
 	UFUNCTION()
-	void FireThird();
+	void FireThird(AMyGameCharacter* MyCharacter);
 
 	UPROPERTY(EditDefaultsOnly, Category = Config)
 	FGunData GunConfig;
@@ -66,5 +68,15 @@ public:
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class AMyProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Config)
+		USoundCue* FireSound;
+
+	//void SetOwner(AMyGameCharacter *NewOwner);
+
+	void PlayFireSound(USoundCue* sound);
+
+protected:
+	AMyGameCharacter *MyCharacter;
 	
 };

@@ -13,6 +13,6 @@ AMyGameGameMode::AMyGameGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-
+	//TotalNumberOfTargets = 3;
 }
 

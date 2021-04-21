@@ -26,4 +26,7 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Target)
 	UStaticMeshComponent* TargetMeshComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Target)
+	bool bWasHit;
+
 };

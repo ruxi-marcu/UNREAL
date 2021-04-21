@@ -2,7 +2,9 @@
 #pragma once
 #include "GameFramework/Character.h"
 #include "MyProjectile.h"
+//#include "Components/SlateWrapperTypes.h"
 #include "MyGameCharacter.generated.h"
+
 
 UCLASS(config=Game)
 class AMyGameCharacter : public ACharacter
@@ -78,6 +80,17 @@ public:
 
 	UPROPERTY()
 	bool isFPSCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	USoundCue* GetGunSound;
+
+	void PlayGetGunSound(USoundCue* sound);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Targets)
+	int TargetsHit;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Targets)
+	bool bShowCrosshair;
 
 protected:
 

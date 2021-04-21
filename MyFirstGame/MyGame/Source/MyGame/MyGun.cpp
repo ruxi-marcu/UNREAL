@@ -4,6 +4,7 @@
 #include "MyGun.h"
 #include "MyProjectile.h"
 #include "Engine.h"
+#include "Components/ActorComponent.h"
 
 
 
@@ -21,11 +22,13 @@ AMyGun::AMyGun()
 
 }
 
-void AMyGun::FireFirst(UCameraComponent* aimCamera)
+void AMyGun::FireFirst(AMyGameCharacter* MyCharacter, UCameraComponent* aimCamera)
 {
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
+		PlayFireSound(FireSound);
+
 		FVector CameraLocation = aimCamera->GetComponentLocation();
 		FRotator CameraRotation = aimCamera->GetComponentRotation();
 
@@ -49,6 +52,7 @@ void AMyGun::FireFirst(UCameraComponent* aimCamera)
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();
 
+				Projectile->MyCharacter = MyCharacter;
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
@@ -59,12 +63,14 @@ void AMyGun::FireFirst(UCameraComponent* aimCamera)
 }
 
 
-void AMyGun::FireThird()
+void AMyGun::FireThird(AMyGameCharacter* MyCharacter)
 {
 
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
+		PlayFireSound(FireSound);
+
 		FVector GunLocation = GunMesh->GetSocketLocation("socketHold");
 		FRotator GunRotation = GunMesh->GetSocketRotation("socketHold");
 
@@ -89,9 +95,18 @@ void AMyGun::FireThird()
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();
 
+				Projectile->MyCharacter = MyCharacter;
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
+	}
+}
+
+void AMyGun::PlayFireSound(USoundCue* sound)
+{
+	if (sound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, sound, GetActorLocation());
 	}
 }
 

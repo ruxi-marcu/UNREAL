@@ -11,6 +11,9 @@ class AMyGameGameMode : public AGameModeBase
 public:
 	AMyGameGameMode();
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Target)
+	//int32 TotalNumberOfTargets;
+
 };
 
 

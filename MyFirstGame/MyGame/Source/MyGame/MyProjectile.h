@@ -7,6 +7,9 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "MyProjectile.generated.h"
 
+class AMyGameCharacter;
+
+
 UCLASS()
 class MYGAME_API AMyProjectile : public AActor
 {
@@ -25,9 +28,6 @@ public:
 	// Function that is called when the projectile hits something.
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
-
-	UPROPERTY(EditDefaultsOnly, Category = Config)
-	USoundCue* FireSound;
 
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 	bool bHit;
@@ -50,5 +50,8 @@ public:
 	// Projectile material
 	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
 		UMaterialInstanceDynamic* ProjectileMaterialInstance;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	AMyGameCharacter* MyCharacter;
 	
 };

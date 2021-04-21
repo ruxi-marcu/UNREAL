@@ -6,6 +6,7 @@
 #include "Containers/UnrealString.h"
 #include "MyGameCharacter.h"
 #include "MyGameGameMode.h"
+#include "MyGameInstance.h"
 #include "Engine.h"
 
 
@@ -87,18 +88,37 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
-		FString compName = OtherComponent->GetName();
-		int32 foundTarget = compName.Find(TEXT("Target"),ESearchCase::IgnoreCase,ESearchDir::FromStart,0);
-		if (foundTarget >= 0) 
-		{
-			
-				//you won play animation
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("TARGET HIT"));
-				bHit = true;
+
+		if (OtherActor->IsA(AMyTarget::StaticClass())) {
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("TARGET HIT"));
+			bHit = true;
+			AMyTarget* TargetHit = Cast<AMyTarget>(OtherActor);
+			if (!TargetHit->bWasHit) 
+			{
+				MyCharacter->TargetsHit++;
+				TargetHit->bWasHit = true;
+
+				//total targets from game instance
+				UGameInstance* gameInstance = GetGameInstance();
+				UMyGameInstance* myGameInstance = Cast<UMyGameInstance>(gameInstance);
+
+				if (myGameInstance->TotalNumberOfTargets == MyCharacter->TargetsHit)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("YOU WON HORAYYY...!!!!"));
+					myGameInstance->bGameWon = true;
+				}
+
+			}
+			else
+			{
+				//target was already hit
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("THIS TARGET WAS ALREADY HIT"));
+			}
 		}
 		
 	}
 
+	SetLifeSpan(0.05f);
 	//Destroy();
 }
 

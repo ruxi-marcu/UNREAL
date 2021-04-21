@@ -20,6 +20,8 @@ AMyTarget::AMyTarget()
 		}
 	}
 
+	bWasHit = false;
+
 }
 
 // Called when the game starts or when spawned

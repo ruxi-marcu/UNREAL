@@ -2,11 +2,13 @@
 
 #include "MyGame.h"
 #include "Kismet/HeadMountedDisplayFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SceneComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "MyGameCharacter.h"
 #include "MyTarget.h"
 #include "MyGun.h"
+#include "MyGameInstance.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AMyGameCharacter
@@ -90,7 +92,12 @@ AMyGameCharacter::AMyGameCharacter()
 	// is set for 3rd person
 	isFPSCamera = false;
 
+	//don't show crosshair
+	bShowCrosshair = false;
 
+	//targets hit
+	TargetsHit = 0;
+	
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -192,6 +199,9 @@ void AMyGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	/*AGameModeBase* gm = (AGameModeBase*)GetWorld()->GetAuthGameMode();
+	gm*/
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = Instigator;
@@ -216,6 +226,7 @@ void AMyGameCharacter::BeginPlay()
 	//bool camera
 	isFPSCamera = false;
 	HasGun = false;
+	bShowCrosshair = false;
 	
 }
 
@@ -225,11 +236,11 @@ void AMyGameCharacter::FireWeapon()
 	{
 		if (isFPSCamera)
 		{
-			CurrentWeapon->FireFirst(AimCamera);
+			CurrentWeapon->FireFirst(this, AimCamera);
 		}
 		else
 		{
-			CurrentWeapon->FireThird();
+			CurrentWeapon->FireThird(this);
 		}
 		
 	}
@@ -251,10 +262,12 @@ void AMyGameCharacter::FirstViewCamera()
 	if (!HasGun)
 	{
 		FPSMesh->SetHiddenInGame(true);
+		bShowCrosshair = false;
 	}
 	else
 	{
 		FPSMesh->SetHiddenInGame(false);
+		bShowCrosshair = true;
 	}
 	
 	// The owning player doesn't see the regular (third-person) body mesh.
@@ -273,6 +286,9 @@ void AMyGameCharacter::ThirdViewCamera()
 	isFPSCamera = false;
 
 	FPSMesh->SetHiddenInGame(true);
+	//hide crosshair
+	bShowCrosshair = false;
+	//enumShowCrosshair = 
 	// The owning player doesn't see the regular (third-person) body mesh.
 	GetMesh()->SetOwnerNoSee(false);
 }
@@ -287,14 +303,18 @@ void AMyGameCharacter::OnOverlap(class UPrimitiveComponent* HitComp, AActor *Oth
 		{
 			if (CurrentWeapon) 
 			{
+				PlayGetGunSound(GetGunSound);
+
 				CurrentWeapon->SetActorHiddenInGame(false);
 				OtherActor->Destroy();
 
 				if (isFPSCamera)
 				{
 					FPSMesh->SetHiddenInGame(false);
+					bShowCrosshair = true;
 				}
 
+				CurrentWeapon->SetOwner(this);
 				
 				HasGun = true;
 
@@ -312,5 +332,13 @@ void AMyGameCharacter::OnOverlap(class UPrimitiveComponent* HitComp, AActor *Oth
 		}
 	}
 
+}
+
+void AMyGameCharacter::PlayGetGunSound(USoundCue* sound)
+{
+	if (sound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, sound, GetActorLocation());
+	}
 }
 
